@@ -20,6 +20,7 @@
 constexpr int UTF8_FLAG = (1 << 11); // Bit 11 set means filename is UTF-8 encoded
 
 
+#ifdef _WIN32
 // Convert Windows wide string (UTF-16) to UTF-8
 std::string wstring_to_utf8(const std::wstring& wstr) {
     if (wstr.empty()) return std::string();
@@ -35,6 +36,7 @@ std::string wstring_to_utf8(const std::wstring& wstr) {
 
     return utf8_str;
 }
+#endif
 
 std::string path_string(const std::filesystem::path& path) {
 #if _WIN32
@@ -113,7 +115,9 @@ bool zip_folder(const std::filesystem::path& folder_path, const std::filesystem:
     fill_win32_filefunc64W(&ffunc64);
     std::wstring wpath = zip_path.wstring();
 
-    zipFile zf = zipOpen2_64(wpath.c_str(),APPEND_STATUS_CREATE,NULL,&ffunc64);
+    zipFile zf = zipOpen2_64(wpath.c_str(), APPEND_STATUS_CREATE, NULL, &ffunc64);
+#else
+    zipFile zf = zipOpen(path_string(zip_path).c_str(), APPEND_STATUS_CREATE);
 #endif
     if (!zf) {
         std::cerr << "Failed to create zip file: " << zip_path << std::endl;
@@ -152,11 +156,13 @@ void enable_utf8_console() {
 }
 #endif
 
-int wmain(int argc, wchar_t* argv[]) {
 
 #ifdef _WIN32
+int wmain(int argc, wchar_t* argv[]) {
     // Enable UTF-8 in Windows console
     enable_utf8_console();
+#else
+int main(int argc, char* argv[]) {
 #endif
 
     if (argc < 3) {

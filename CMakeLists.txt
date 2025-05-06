@@ -39,10 +39,12 @@ target_link_libraries(minizip PUBLIC zlibstatic)
 add_executable(zipit
     main.cpp
 )
-target_compile_options(zipit PUBLIC /utf-8) # Set UTF-8 encoding for source files
+
 target_link_libraries(zipit PRIVATE zlibstatic minizip)
+
 
 # On Windows, enable Unicode properly
 if (WIN32)
+    target_compile_options(zipit PUBLIC /utf-8) # Set UTF-8 encoding for source files
     target_compile_definitions(zipit PRIVATE UNICODE _UNICODE)
 endif()
