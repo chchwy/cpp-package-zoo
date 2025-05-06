@@ -1,34 +1,45 @@
-cmake_minimum_required(VERSION 3.21.0)
-project(zip-dir VERSION 0.1.0 LANGUAGES C CXX)
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build shared libraries" FORCE)
+cmake_minimum_required(VERSION 3.24)
+project(ZipFolder LANGUAGES CXX C)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
+# Fetch zlib
 FetchContent_Declare(
     zlib
-    GIT_REPOSITORY https://github.com/madler/zlib.git
-    GIT_TAG        v1.3.1
+    URL https://zlib.net/zlib-1.3.1.tar.gz
 )
-set(ZLIB_BUILD_EXAMPLES OFF)
+
 FetchContent_MakeAvailable(zlib)
 
-# Add minizip source files
-set(MINIZIP_SOURCES
-    ${zlib_SOURCE_DIR}/contrib/minizip/zip.c
-    ${zlib_SOURCE_DIR}/contrib/minizip/unzip.c
-    ${zlib_SOURCE_DIR}/contrib/minizip/ioapi.c
-    ${zlib_SOURCE_DIR}/contrib/minizip/iowin32.c
+# Setup minizip manually from zlib's contrib/minizip
+set(MINIZIP_DIR ${zlib_SOURCE_DIR}/contrib/minizip)
+
+add_library(minizip STATIC
+    ${MINIZIP_DIR}/ioapi.c
+    ${MINIZIP_DIR}/iowin32.c # Only needed on Windows
+    ${MINIZIP_DIR}/mztools.c
+    ${MINIZIP_DIR}/unzip.c
+    ${MINIZIP_DIR}/zip.c
 )
 
-add_executable(zip-dir main.cpp ${MINIZIP_SOURCES})
-set_target_properties(zip-dir PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
+target_include_directories(minizip PUBLIC
+    ${MINIZIP_DIR}
+    ${zlib_SOURCE_DIR}
 )
 
-target_link_libraries(zip-dir PRIVATE zlibstatic)
+target_link_libraries(minizip PUBLIC zlibstatic)
 
-include(CTest)
-enable_testing()
+# Add our main executable
+add_executable(zipit
+    main.cpp
+)
+target_compile_options(zipit PUBLIC /utf-8) # Set UTF-8 encoding for source files
+target_link_libraries(zipit PRIVATE zlibstatic minizip)
 
+# On Windows, enable Unicode properly
+if (WIN32)
+    target_compile_definitions(zipit PRIVATE UNICODE _UNICODE)
+endif()
