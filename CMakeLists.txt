@@ -19,11 +19,14 @@ set(MINIZIP_DIR ${zlib_SOURCE_DIR}/contrib/minizip)
 
 add_library(minizip STATIC
     ${MINIZIP_DIR}/ioapi.c
-    ${MINIZIP_DIR}/iowin32.c # Only needed on Windows
     ${MINIZIP_DIR}/mztools.c
     ${MINIZIP_DIR}/unzip.c
     ${MINIZIP_DIR}/zip.c
 )
+
+if (WIN32)
+    target_sources(minizip PRIVATE ${MINIZIP_DIR}/iowin32.c) # Only needed on Windows
+endif()
 
 target_include_directories(minizip PUBLIC
     ${MINIZIP_DIR}

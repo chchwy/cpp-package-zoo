@@ -9,8 +9,8 @@
 
 #include "zip.h" // Include the original minizip's zip.h
 #ifdef _WIN32
-    #include <fcntl.h>
-    #include <io.h>
+  #include <fcntl.h>
+  #include <io.h>
 
   #define USEWIN32IOAPI
   #include "iowin32.h"
