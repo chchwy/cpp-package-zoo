@@ -16,6 +16,7 @@
   #include "iowin32.h"
 #endif
 
+#include <spdlog/spdlog.h>
 
 constexpr int UTF8_FLAG = (1 << 11); // Bit 11 set means filename is UTF-8 encoded
 
@@ -164,6 +165,8 @@ int wmain(int argc, wchar_t* argv[]) {
 #else
 int main(int argc, char* argv[]) {
 #endif
+    spdlog::info("Welcome to spdlog!");
+    spdlog::info("This is a test for zipping folders with CJK characters in the name.");
 
     if (argc < 3) {
 		std::cerr << "Usage: zipit <folder_to_zip> <output_zip_file>" << std::endl;
@@ -178,29 +181,20 @@ int main(int argc, char* argv[]) {
 	std::filesystem::path zipfile{ argv[2] }; // Output zip file name
 
     if (!std::filesystem::exists(folder)) {
-        std::cout << "Folder does not exist.\n";
-    }
-
-    std::cout << "File path received: " << path_string(folder) << "\n";
-
-    try {
-        //std::cout << "Compressing folder: " << folder.string() << std::endl;
-        //std::cout << "Output zip file: " << zipfile << std::endl;
-    } catch (const std::system_error& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cout << "Folder does not exist: " << path_string(folder) << "\n";
         return 1;
     }
 
+    std::cout << "Compressing directory: " << path_string(folder) << "\n";
+
     bool ok = zip_folder(folder, zipfile);
+
     if (ok && std::filesystem::exists(zipfile)) {
         std::cout << "Successfully created zip: " << path_string(zipfile) << std::endl;
+        spdlog::info("Confirmed the zip exists {}", path_string(zipfile));
     } else {
         std::cerr << "Failed to create zip: " << path_string(zipfile) << std::endl;
         return 1;
-    }
-
-    if (std::filesystem::exists(zipfile)) {
-        std::cout << "Yes!!!\n" << std::endl;
     }
 
     return 0;

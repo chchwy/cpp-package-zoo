@@ -23,7 +23,7 @@ jobs:
       shell: powershell
       working-directory: ${{github.workspace}}
       run: |
-        cd ${{github.workspace}}/001-fetch-content-zlib
+        cd ${{github.workspace}}/01-01-fetch-content-zlib
         cmake -E make_directory build
         cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
         cmake --build build --config ${{matrix.build_type}}
@@ -34,7 +34,7 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}
       run: |
-        cd ${{github.workspace}}/001-fetch-content-zlib
+        cd ${{github.workspace}}/01-01-fetch-content-zlib
         cmake -E make_directory build
         cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
         cmake --build build --config ${{matrix.build_type}}

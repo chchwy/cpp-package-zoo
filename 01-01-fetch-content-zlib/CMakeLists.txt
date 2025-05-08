@@ -12,7 +12,23 @@ FetchContent_Declare(
     URL https://zlib.net/zlib-1.3.1.tar.gz
 )
 
+FetchContent_Declare(
+    fmt
+    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+    GIT_TAG        11.2.0
+)
+
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG        v1.15.2
+)
+
+set(SPDLOG_FMT_EXTERNAL ON CACHE BOOL "Use external fmt library")
+
 FetchContent_MakeAvailable(zlib)
+FetchContent_MakeAvailable(fmt)
+FetchContent_MakeAvailable(spdlog)
 
 # Setup minizip manually from zlib's contrib/minizip
 set(MINIZIP_DIR ${zlib_SOURCE_DIR}/contrib/minizip)
@@ -40,7 +56,11 @@ add_executable(zipit
     ../src/zip_folder.cpp
 )
 
-target_link_libraries(zipit PRIVATE zlibstatic minizip)
+target_link_libraries(zipit PRIVATE
+    zlibstatic
+    minizip
+    fmt::fmt
+    spdlog::spdlog)
 
 # On Windows, enable Unicode properly
 if (WIN32)
