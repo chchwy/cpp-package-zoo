@@ -15,37 +15,37 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: Create Build Environment
-      run: cmake -E make_directory ${{github.workspace}}/build
-      
-    - name: Configure CMake (Windows)
+    - name: Print CMake Version
+      run: cmake --version
+
+    - name: Build CMake (Windows)
       if: matrix.os == 'windows-latest'
-      shell: cmd
-      working-directory: ${{github.workspace}}/build
-      run: cmake ${{github.workspace}} -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+      shell: powershell
+      working-directory: ${{github.workspace}}
+      run: |
+        cd ${{github.workspace}}/01-fetch-content-zlib
+        cmake -E make_directory build
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+        cmake --build build --config ${{matrix.build_type}}
+        ctest -C ${{matrix.build_type}} --output-on-failure
       
-    - name: Configure CMake (Unix)
+    - name: Build CMake (Unix)
       if: matrix.os != 'windows-latest'
       shell: bash
-      working-directory: ${{github.workspace}}/build
-      run: cmake ${{github.workspace}} -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+      working-directory: ${{github.workspace}}
+      run: |
+        cd ${{github.workspace}}/01-fetch-content
+        cmake -E make_directory build
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+        cmake --build build --config ${{matrix.build_type}}
+        ctest -C ${{matrix.build_type}} --output-on-failure
       
-    - name: Build
-      working-directory: ${{github.workspace}}/build
-      run: cmake --build . --config ${{matrix.build_type}}
-      
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Run tests if you have them
-      run: ctest -C ${{matrix.build_type}} --output-on-failure
-      continue-on-error: true
-      
-    - name: Upload Build Artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.os }}-${{ matrix.build_type }}
-        path: |
-          ${{github.workspace}}/build/zipit*
-          ${{github.workspace}}/build/*.exe
-        if-no-files-found: ignore
+    #- name: Upload Build Artifacts
+    #  if: always()
+    #  uses: actions/upload-artifact@v4
+    #  with:
+    #    name: ${{ matrix.os }}-${{ matrix.build_type }}
+    #    path: |
+    #      ${{github.workspace}}/build/zipit*
+    #      ${{github.workspace}}/build/*.exe
+    #    if-no-files-found: ignore

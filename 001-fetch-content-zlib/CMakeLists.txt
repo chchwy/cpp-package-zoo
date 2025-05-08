@@ -37,11 +37,10 @@ target_link_libraries(minizip PUBLIC zlibstatic)
 
 # Add our main executable
 add_executable(zipit
-    main.cpp
+    ../src/zip_folder.cpp
 )
 
 target_link_libraries(zipit PRIVATE zlibstatic minizip)
-
 
 # On Windows, enable Unicode properly
 if (WIN32)
