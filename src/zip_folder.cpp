@@ -157,7 +157,6 @@ void enable_utf8_console() {
 }
 #endif
 
-
 #ifdef _WIN32
 int wmain(int argc, wchar_t* argv[]) {
     // Enable UTF-8 in Windows console
