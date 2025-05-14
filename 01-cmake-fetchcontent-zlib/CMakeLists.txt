@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(ZipFolder LANGUAGES CXX C)
+project(PM01_FetchContent LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -63,9 +63,13 @@ target_include_directories(minizip PUBLIC
 
 target_link_libraries(minizip PUBLIC zlibstatic)
 
+message(STATUS "TEST ${CMAKE_CURRENT_SOURCE_DIR}")
+
 # Add our main executable
 add_executable(zipit
-    ../src/zip_folder.cpp
+    src/zipit.h
+    src/zipit.cpp
+    src/main.cpp
 )
 
 target_link_libraries(zipit PRIVATE
@@ -86,8 +90,7 @@ enable_testing()
 
 # Add test executable
 add_executable(zip_tests
-    ../src/zip_folder.cpp
-    ../tests/zip_tests.cpp  # Create this file for your tests
+    tests/zipit_tests.cpp  # Create this file for your tests
 )
 
 target_link_libraries(zip_tests PRIVATE
@@ -97,6 +100,11 @@ target_link_libraries(zip_tests PRIVATE
     spdlog::spdlog
     gtest_main  # This includes the main() function
 )
+
+if (WIN32)
+    target_compile_options(zip_tests PUBLIC /utf-8) # Set UTF-8 encoding for source files
+    target_compile_definitions(zip_tests PRIVATE UNICODE _UNICODE)
+endif()
 
 # Register tests with CTest
 include(GoogleTest)

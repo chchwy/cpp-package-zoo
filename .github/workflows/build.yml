@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
-        build_type: [Release]
+        project: [01-cmake-fetchcontent-zlib]
         
     steps:
     - uses: actions/checkout@v4
@@ -23,10 +23,10 @@ jobs:
       shell: powershell
       working-directory: ${{github.workspace}}
       run: |
-        cd ${{github.workspace}}/01-01-fetch-content-zlib
+        cd ${{github.workspace}}/${matrix.project}
         cmake -E make_directory build
         cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
-        cmake --build build --config ${{matrix.build_type}}
+        cmake --build build --config Release
         ctest -C ${{matrix.build_type}} --output-on-failure
       
     - name: Build CMake (Unix)
@@ -34,18 +34,8 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}
       run: |
-        cd ${{github.workspace}}/01-01-fetch-content-zlib
+        cd ${{github.workspace}}/${{ matrix.project }}
         cmake -E make_directory build
         cmake -S . -B build -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
-        cmake --build build --config ${{matrix.build_type}}
+        cmake --build build --config Release
         ctest -C ${{matrix.build_type}} --output-on-failure
-      
-    #- name: Upload Build Artifacts
-    #  if: always()
-    #  uses: actions/upload-artifact@v4
-    #  with:
-    #    name: ${{ matrix.os }}-${{ matrix.build_type }}
-    #    path: |
-    #      ${{github.workspace}}/build/zipit*
-    #      ${{github.workspace}}/build/*.exe
-    #    if-no-files-found: ignore
