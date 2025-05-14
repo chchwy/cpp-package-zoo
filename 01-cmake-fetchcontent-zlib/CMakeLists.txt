@@ -1,5 +1,8 @@
+# FetchContent example for zlib, fmt, spdlog, and googletest
+# This CMakeLists.txt file demonstrates how to use FetchContent to download and build
+
 cmake_minimum_required(VERSION 3.24)
-project(PM01_FetchContent LANGUAGES CXX C)
+project(P01_FetchContent_zlib LANGUAGES CXX C)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
