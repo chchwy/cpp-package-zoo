@@ -6,7 +6,7 @@
 
 
 // Include your implementation headers here
-#include "../zipit.h"
+#include "../src/zipit.h"
 
 TEST(ZipTest, SimpleZip) {
     // Setup a test directory and files
