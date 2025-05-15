@@ -12,16 +12,15 @@ include(FetchContent)
 set(FETCHCONTENT_QUIET OFF)
 
 # Fetch boost
-set(BOOST_INCLUDE_LIBRARIES program_options)
+set(BOOST_INCLUDE_LIBRARIES program_options asio)
 set(BOOST_ENABLE_CMAKE ON)
 
 FetchContent_Declare(
     Boost
-    URL https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.xz
-    URL_MD5 893b5203b862eb9bbd08553e24ff146a
+    URL https://github.com/boostorg/boost/releases/download/boost-1.88.0/boost-1.88.0-cmake.tar.xz
+    URL_HASH SHA256=f48b48390380cfb94a629872346e3a81370dc498896f16019ade727ab72eb1ec
     DOWNLOAD_EXTRACT_TIMESTAMP ON
-    USES_TERMINAL_DOWNLOAD TRUE
-    DOWNLOAD_NO_EXTRACT FALSE
+    USES_TERMINAL_DOWNLOAD ON
 )
 
 FetchContent_MakeAvailable(Boost)
@@ -29,4 +28,5 @@ FetchContent_MakeAvailable(Boost)
 add_executable(boost_example main.cpp)
 target_link_libraries(boost_example PRIVATE
     Boost::program_options
+    Boost::asio
 )
