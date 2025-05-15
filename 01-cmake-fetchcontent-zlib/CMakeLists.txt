@@ -92,11 +92,13 @@ include(CTest)
 enable_testing()
 
 # Add test executable
-add_executable(zip_tests
+add_executable(zipit_tests
+    src/zipit.h
+    src/zipit.cpp
     tests/zipit_tests.cpp  # Create this file for your tests
 )
 
-target_link_libraries(zip_tests PRIVATE
+target_link_libraries(zipit_tests PRIVATE
     zlibstatic
     minizip
     fmt::fmt
@@ -105,10 +107,10 @@ target_link_libraries(zip_tests PRIVATE
 )
 
 if (WIN32)
-    target_compile_options(zip_tests PUBLIC /utf-8) # Set UTF-8 encoding for source files
-    target_compile_definitions(zip_tests PRIVATE UNICODE _UNICODE)
+    target_compile_options(zipit_tests PUBLIC /utf-8) # Set UTF-8 encoding for source files
+    target_compile_definitions(zipit_tests PRIVATE UNICODE _UNICODE)
 endif()
 
 # Register tests with CTest
 include(GoogleTest)
-gtest_discover_tests(zip_tests)
+gtest_discover_tests(zipit_tests)
